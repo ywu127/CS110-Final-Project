@@ -1,283 +1,33 @@
 import pygame
-import random
-import time
 
 from start import *
 from player import *
 from block import *
 
-
-################################################################################
-#This part is menu
-pygame.init()
-
-
-# screen constants
-display_width = 780
-display_height = 780
-
-
-# colors
-black = (0, 0, 0)
-white = (255, 255, 255)
-
-Orange_Red = (255, 69, 0)
-Tomato = (255, 96, 71)
-
-Yellow_Green = (154, 205, 50)
-Lime_Green = (50, 205, 50)
-
-
-Orange = (255, 165, 0)
-Dark_Orange = (255, 140, 0)
-
-Slate_Gray = (119, 136, 153)
-Dim_Gray = (105, 105, 105)
-
-Medium_Purple = (147, 112, 219)
-Violet = (238, 130, 238)
-
-# prepare cursors
-#the default cursor
-DEFAULT_CURSOR = pygame.mouse.get_cursor()
-
-#the hand cursor
-HAND_CURSOR = (
-"        XX      ",
-"       X..X     ",
-"       X..X     ",
-"       X..X     ",
-"    XXXX..XXX   ",
-"    X..X..X.XX  ",
-" XX X..X..X.X.X ",
-"X..XX.........X ",
-"X...X.........X ",
-" X.....X.X.X..X ",
-"  X....X.X.X..X ",
-"  X....X.X.X.X  ",
-"   X...X.X.X.X  ",
-"    X.......X   ",
-"     X....X.X   ",
-"     XXXXX XX   ")
-_HCURS, _HMASK = pygame.cursors.compile(HAND_CURSOR, ".", "X")
-HAND_CURSOR = ((16, 16), (5, 1), _HCURS, _HMASK)
-
-gameDisplay = pygame.display.set_mode((display_width, display_height)) #create screen
-pygame.display.set_caption('Pygaming With Fire')#title
-clock = pygame.time.Clock()
-
-pause = False
-
-# image constants
-titleImg = pygame.image.load('title_images//title.png')
-titleCharImg1 = pygame.image.load('title_images//char_title_1.png')
-titleCharImg2 = pygame.image.load('title_images//char_title_2.png')
-titleCharImg3 = pygame.image.load('title_images//char_title_3.png')
-bgImg = pygame.image.load('title_images//Adventurer_Manager_Background_The_Pillaged_Town1.png')
-
-
-#functions
-def bg(n,m):
-    gameDisplay.blit(bgImg, (n, m))
-
-n = (display_width * 0.0001)
-m = (display_width * 0.0001)
-    
-def title(x, y): #title image
-    gameDisplay.blit(titleImg, (x, y))
-
-x = (display_width * 0.3)
-y = (display_width * 0.1)
-
-
-def titleChar_1(z, q): #title image
-    gameDisplay.blit(titleCharImg1, (z, q))
-    
-z = (display_width * 0.25) #z = x
-q = (display_width * 0.1) #q = y
-
-def titleChar_2(a, b): #title image
-    gameDisplay.blit(titleCharImg2, (a, b))
-    
-a = (display_width * 0.35) #a = x
-b = (display_width * 0.2) #b = y
-
-def titleChar_3(k, l): #title image
-    gameDisplay.blit(titleCharImg3, (k, l))
-    
-k = (display_width * 0.45) #k = x
-l = (display_width * 0.3) #l = y
-
-def text_objects(text, font):
-    textSurface = font.render(text, True, white)
-    return textSurface, textSurface.get_rect()
-text = "A game where you can kill whoever you want!"
-
-def button(msg,x,y,w,h,ic,ac,action=None): #ic=insideColor
-
-    mouse = pygame.mouse.get_pos()
-    click = pygame.mouse.get_pressed()
-
-    if x+w > mouse[0] > x and y+h > mouse[1] > y: #when cursor in the button
-        #pygame.mouse.set_cursor(*HAND_CURSOR) #change cursor to hand
-        pygame.draw.rect(gameDisplay, ac, (x,y,w,h))
-        if click[0] == 1 and action != None:
-            if action() == "play":
-                c.main_loop()
-            elif action == "quit":
-                pygame.quit()
-                quit()
-
-    else:
-        #pygame.mouse.set_cursor(*DEFAULT_CURSOR)
-        pygame.draw.rect(gameDisplay, ic, (x,y,w,h))        
-    smallText = pygame.font.SysFont('Silom', 20) #botton font
-    textSurf, textRect = text_objects(msg, smallText)
-    textRect.center = ((x+(w/2)), y+(h/2))
-    gameDisplay.blit(textSurf, textRect)
-
-
-def quitgame():
-    pygame.quit()
-    quit()
-
-def unpause():
-    global pause
-    pause = False
-
-def paused():
-    
-    #gameDisplay.fill(black)
-    largeText = pygame.font.SysFont('Silom', 50)
-    TextSurf, TextRect = text_objects("Paused", largeText)
-    TextRect.center = ((display_width * 0.5), (display_height * 0.45))
-    gameDisplay.blit(TextSurf, TextRect)
-    while pause:
-        mouse = pygame.mouse.get_pos()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-            
-        if 350+100 > mouse[0] > 350 and 600+50 > mouse[1] > 600: 
-                pygame.mouse.set_cursor(*HAND_CURSOR) 
-        elif 350+100 > mouse[0] > 350 and 700+50 > mouse[1] > 700: 
-                pygame.mouse.set_cursor(*HAND_CURSOR) 
-        else:
-                pygame.mouse.set_cursor(*DEFAULT_CURSOR)
-                
-        button("Continue",350,600,100,50, Medium_Purple, Violet, unpause)
-        button("Quit",350,700,100,50, Slate_Gray, Dim_Gray, quitgame)
-
-        pygame.display.update()
-        clock.tick(15)
-        
-#I made the gameover screen function, but I don't know how to call it.
-def gameover():
-    
-    #gameover = True
-    largeText = pygame.font.SysFont('Silom', 20)
-    TextSurf, TextRect = text_objects("Game Over", largeText)
-    TextRect.center = ((display_width * 0.5), (display_height * 0.45))
-    gameDisplay.blit(TextSurf, TextRect)
-
-    while True:
-        mouse = pygame.mouse.get_pos()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT():
-                pygame.quit()
-                quit()
-                
-        if 350+100 > mouse[0] > 350 and 600+50 > mouse[1] > 600: 
-                pygame.mouse.set_cursor(*HAND_CURSOR) 
-        elif 350+100 > mouse[0] > 350 and 700+50 > mouse[1] > 700: 
-                pygame.mouse.set_cursor(*HAND_CURSOR) 
-        else:
-                pygame.mouse.set_cursor(*DEFAULT_CURSOR)
-                
-        button("Play Again",350,600,100,50, Orange, Dark_Orange, c.main_loop)
-        button("Quit",350,700,100,50, Slate_Gray, Dim_Gray, quitgame)
-                       
-        pygame.display.update()
-        clock.tick(15)
-
-
-def game_intro():
-
-
-        intro = False
-
-        while intro == False:
-                mouse = pygame.mouse.get_pos()
-                #click = pygame.mouse.get_pressed()
-                for event in pygame.event.get():
-                        if event.type == pygame.QUIT:
-                                pygame.quit()
-                                quit()
-                        elif event.type == pygame.MOUSEBUTTONDOWN:
-                                pygame.mouse.set_cursor(*HAND_CURSOR) 
-                        else:
-                                pygame.mouse.set_cursor(*DEFAULT_CURSOR)
-                # change cursor to hand if it is on the button
-                if 350+100 > mouse[0] > 350 and 400+50 > mouse[1] > 400: 
-                        pygame.mouse.set_cursor(*HAND_CURSOR) 
-                elif 350+100 > mouse[0] > 350 and 500+50 > mouse[1] > 500: 
-                        pygame.mouse.set_cursor(*HAND_CURSOR) 
-                elif 350+100 > mouse[0] > 350 and 600+50 > mouse[1] > 600: 
-                        pygame.mouse.set_cursor(*HAND_CURSOR) 
-                elif 350+100 > mouse[0] > 350 and 700+50 > mouse[1] > 700: 
-                        pygame.mouse.set_cursor(*HAND_CURSOR) 
-                else:
-                        pygame.mouse.set_cursor(*DEFAULT_CURSOR)
-
-                bg(n, m)
-                title(x, y)
-                titleChar_1(z, q)
-                titleChar_2(a, b)
-                titleChar_3(k, l)
-
-                message = pygame.font.SysFont('Silom', 20)
-                TextSurf, TextRect = text_objects(text, message)
-                TextRect.center = ((display_width * 0.5), (display_height * 0.45))
-                gameDisplay.blit(TextSurf, TextRect)
-
-
-                button("2 Player",350,400,100,50, Orange_Red, Tomato, c.main_loop)
-                button("3 Player",350,500,100,50, Lime_Green, Yellow_Green, c.main_loop)
-                button("4 Player",350,600,100,50, Orange, Dark_Orange, c.main_loop)
-                button("Quit",350,700,100,50, Slate_Gray, Dim_Gray, quitgame)
-
-        
-
-                pygame.display.update()
-                clock.tick(15)
-                
-#################################################################################
-'''
-#This part is the Game Over screen
-medText = pygame.font.SysFont('Silom', 50) #botton font
-text_object("Enter your initials", medText)
-'''
-#################################################################################
 class Controller:
 
     def __init__(self):
         
-        # SETTINGS  
-        self.WIDTH = 780
-        self.HEIGHT = 780
-        self.BLOCK = 60
-        self.SPEED = 5
+        # SETTINGS
+        self.NUM_PLAYERS = 0
+        self.LIVES = 1
         self.NUM_BOMBS = 3
-        self.FRAMERATE = 80
+        self.FIRE_LEN = 3
+        self.SPEED = 5
+        
+        self.WHITE = (255, 255, 255)        
+        self.DISP_WIDTH = 780
+        self.DISP_HEIGHT = 780
         self.ARENA_UPPER = 11
         self.ARENA_LOWER = 1
-        self.WHITE = (255, 255, 255)
-        self.TURN_ASSIST = .7
-        self.STICK_DEG = 3
+        self.BLOCK_SIZE = 60
         self.TICK_TIME = 2500
-        self.FIRE_TIME = 400
-    
+        self.FIRE_TIME = 400        
+        self.STICK_DEG = 3
+        self.TURN_ASSIST = .7
+        self.FRAMERATE = 80
+        self.WINNER = None
+        
         # CONTROL DICTIONARY {pygame.event.type.key:(player ID, command)}
         self.CONTROLS = {pygame.K_w:(0, 'UP'), pygame.K_d:(0, 'RIGHT'), pygame.K_s:(0, 'DOWN'), pygame.K_a:(0, 'LEFT'), pygame.K_LSHIFT:(0, 'BOMB'),
                          pygame.K_i:(1, 'UP'), pygame.K_l:(1, 'RIGHT'), pygame.K_k:(1, 'DOWN'), pygame.K_j:(1, 'LEFT'), pygame.K_n: (1, 'BOMB'),
@@ -285,8 +35,8 @@ class Controller:
                          pygame.K_KP8:(3, 'UP'), pygame.K_KP6:(3, 'RIGHT'), pygame.K_KP5:(3, 'DOWN'), pygame.K_KP4:(3, 'LEFT'), pygame.K_KP_PLUS: (3, 'BOMB')}
 
         # INITIALIZE DISPLAY OBJECT
-        pygame.display.init()
-        self.display = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
+        pygame.init()
+        self.display = pygame.display.set_mode((self.DISP_WIDTH, self.DISP_HEIGHT))
         pygame.display.set_caption('Pygaming With Fire')
         
         # CLOCK
@@ -310,10 +60,20 @@ class Controller:
         self.fires = pygame.sprite.Group()
         self.powers = pygame.sprite.Group()
 
+
+    def populate_arena(self):
+
+        # DELETE CONTROLS IF FEWER PLAYERS
+        del_controls = [key for key in self.CONTROLS if self.CONTROLS[key][0] > self.NUM_PLAYERS - 1]
+        
+        for control in del_controls:
+            
+            self.CONTROLS.pop(control)
+
         # INSTANTIATE BLOCKS        
         for x, y, form in gen_blocks():
             
-            block = Block((x, y), self.BLOCK, form)
+            block = Block((x, y), self.BLOCK_SIZE, form)
             
             self.blocks.add(block)
 
@@ -326,13 +86,15 @@ class Controller:
                 self.ends.add(block)
 
         # INSTATNTIATE PLAYERS
-        for x, y, ID in gen_players():
+        for x, y, ID in gen_players(self.NUM_PLAYERS):
 
-            player = Player((x, y), self.BLOCK, ID)
-
-            player.speed = self.SPEED
-
+            player = Player((x, y), self.BLOCK_SIZE, ID)
+            
+            player.lives = self.LIVES
             player.num_bombs = self.NUM_BOMBS
+            player.regn_time = pygame.time.get_ticks()
+            player.fire_len = self.FIRE_LEN
+            player.speed = self.SPEED
             
             self.players.add(player)
 
@@ -347,12 +109,11 @@ class Controller:
             player.dead_img.convert()
             player.invi_img.convert()
 
-#####################################################################################################################################
-
+            
     def check_legal(self, future_x, future_y):
 
         # CHECK BARREL COLLISION (using pixels)
-        future_rect = pygame.Rect(future_x, future_y, self.BLOCK, self.BLOCK)
+        future_rect = pygame.Rect(future_x, future_y, self.BLOCK_SIZE, self.BLOCK_SIZE)
 
         collision = False
 
@@ -386,14 +147,13 @@ class Controller:
 
         return legal
 
-#####################################################################################################################################
 
     def drop_bomb(self, bomber):
 
         # CHECK IF ANOTHER PLAY IS BLOCKING BOMB SPACE
         future_x, future_y = stick_pixels((bomber.x, bomber.y))
         
-        future_rect = pygame.Rect(future_x, future_y, self.BLOCK, self.BLOCK)
+        future_rect = pygame.Rect(future_x, future_y, self.BLOCK_SIZE, self.BLOCK_SIZE)
 
         if bomber.num_bombs:
             
@@ -433,7 +193,6 @@ class Controller:
 
             bomber.on_bomb = True
 
-#####################################################################################################################################
             
     def gen_fire(self, bomb):
 
@@ -492,12 +251,9 @@ class Controller:
 
             yield bomb_x_coord - x_adj, bomb_y_coord
        
-#####################################################################################################################################
     
     def main_loop(self):
-        #pasue
-        global pause
-        
+
         crash = False
 
         while crash == False:
@@ -512,10 +268,6 @@ class Controller:
 
                 # HANDLE KEY DOWN EVENT
                 if event.type == pygame.KEYDOWN:
-                    #pause function
-                    if event.key == pygame.K_p:
-                        pause = True
-                        paused()
 
                     event_action = self.CONTROLS.get(event.key) # Grab (player, command) based on pygame.event.type.key
 
@@ -529,7 +281,6 @@ class Controller:
                         command = event_action[1]
 
                     player = self.player_list[player_ID]
-
 
                     if player.dead_time:
 
@@ -549,8 +300,7 @@ class Controller:
 
                         if abs(rail - y_coord) < self.TURN_ASSIST:
 
-                            near_horizont_rail = rail                           
-                    
+                            near_horizont_rail = rail                            
 
                     if command == 'UP' and near_vertical_rail: # "If command is up and near a vertical rail: queue movement, shift to get on rail, and shift off bombs (instant and manual)
 
@@ -569,11 +319,11 @@ class Controller:
     
                         if player.on_bomb: # "If on a bomb, manually shift off of it if the future rectangle is legal"
                         
-                            future_y = player.y - self.BLOCK 
+                            future_y = player.y - self.BLOCK_SIZE
 
                             if self.check_legal(player.x, future_y) : 
 
-                                player.y -= (self.BLOCK - player.speed)
+                                player.y -= (self.BLOCK_SIZE - player.speed)
 
                     elif command == 'RIGHT' and near_horizont_rail:
           
@@ -589,11 +339,11 @@ class Controller:
     
                         if player.on_bomb: 
                         
-                            future_x = player.x + self.BLOCK 
+                            future_x = player.x + self.BLOCK_SIZE
 
                             if self.check_legal(future_x, player.y): 
 
-                                player.x += (self.BLOCK - player.speed)
+                                player.x += (self.BLOCK_SIZE - player.speed)
 
                     elif command == 'DOWN' and near_vertical_rail:
           
@@ -609,11 +359,11 @@ class Controller:
     
                         if player.on_bomb: 
                         
-                            future_y = player.y + self.BLOCK
+                            future_y = player.y + self.BLOCK_SIZE
 
                             if self.check_legal(player.x, future_y): 
 
-                                player.y += (self.BLOCK - player.speed)
+                                player.y += (self.BLOCK_SIZE - player.speed)
 
                     elif command == 'LEFT' and near_horizont_rail:
          
@@ -629,37 +379,37 @@ class Controller:
     
                         if player.on_bomb: 
                         
-                            future_x = player.x - self.BLOCK 
+                            future_x = player.x - self.BLOCK_SIZE 
 
                             if self.check_legal(future_x, player.y): 
 
-                                player.x -= (self.BLOCK - player.speed)
+                                player.x -= (self.BLOCK_SIZE - player.speed)
                             
                     elif command == 'BOMB':
                         
                         self.drop_bomb(player)
 
                         # SLIDE OFF BOMB IMMEDIATELY IF DIRECTIONAL KEY WAS PRESSED
-                        up_future_y = player.y - self.BLOCK
-                        right_future_x = player.x + self.BLOCK
-                        down_future_y = player.y + self.BLOCK
-                        left_future_x = player.x - self.BLOCK
+                        up_future_y = player.y - self.BLOCK_SIZE
+                        right_future_x = player.x + self.BLOCK_SIZE
+                        down_future_y = player.y + self.BLOCK_SIZE
+                        left_future_x = player.x - self.BLOCK_SIZE
 
                         if player.up_pressed and self.check_legal(player.x, up_future_y):
 
-                            player.y -= (self.BLOCK - player.speed)
+                            player.y -= (self.BLOCK_SIZE - player.speed)
                             
                         elif player.right_pressed and self.check_legal(right_future_x, player.y):
 
-                            player.x += (self.BLOCK - player.speed)
+                            player.x += (self.BLOCK_SIZE - player.speed)
 
                         elif player.down_pressed and self.check_legal(player.x, down_future_y):
                        
-                            player.y += (self.BLOCK - player.speed)
+                            player.y += (self.BLOCK_SIZE - player.speed)
 
                         elif player.left_pressed and self.check_legal(left_future_x, player.y):
 
-                            player.x -= (self.BLOCK - player.speed)
+                            player.x -= (self.BLOCK_SIZE - player.speed)
                             
                 # HANDLE KEY UP EVENT
                 if event.type == pygame.KEYUP:
@@ -721,8 +471,6 @@ class Controller:
 
                             player.move_x = 0
 
-#####################################################################################################################################
-
             # UPDATE BOMB
             for bomb in self.bombs.sprites():
                 
@@ -765,9 +513,6 @@ class Controller:
                     bomb.drop_time = None # Reset drop time       
                     bomb.fires = set() # Reset set of fire coords
                     bomb.fire_len = None # Reset fire length
-                    # None of this would have to be done if bomb was a separate class :^)
-                    
-#####################################################################################################################################
 
             # UPDATE FIRES
             for fire in self.fires.sprites():
@@ -783,23 +528,29 @@ class Controller:
                         self.powers.add(fire)
 
                     self.fires.remove(fire)
-
-#####################################################################################################################################
                 
             # UPDATE PLAYERS
             for player in self.player_list:
 
                 current_time = pygame.time.get_ticks()
-                
                 future_x = player.x + player.move_x
                 future_y = player.y + player.move_y
 
+                # BOMB REGENERATION
+                if player.num_bombs < 3 and current_time - player.regn_time > 6000: # Regenerate bombs every 6 seconds if less than 3 bombs
+
+                    player.num_bombs += 1
+
+                    player.regn_time = pygame.time.get_ticks()
+
+                # UPDATE LEGAL MOVES
                 if self.check_legal(future_x, future_y):
 
                     player.on_bomb = False # Reset on bomb, legal moves never land on a bomb
                 
                     player.update()
 
+                # PICK UP POWER UPS
                 power_collision = pygame.sprite.spritecollide(player, self.powers, False)
 
                 for power in power_collision: # Give player power up and manually change block to walk space (update handles 'WALK' for other block changes)
@@ -822,7 +573,7 @@ class Controller:
 
                     elif power.form[4:] == 'LONG':
 
-                        player.fire_len = min(5, player.fire_len + 1)
+                        player.fire_len = min(6, player.fire_len + 1)
 
                     power.contents = None
                     power.form = 'WALK'
@@ -830,9 +581,10 @@ class Controller:
 
                     self.powers.remove(power)
 
+                # DEATH AND TIME UPDATES
                 dead_collision = pygame.sprite.spritecollide(player, self.fires, False)
 
-                if player.invi_time:
+                if player.invi_time: # Check invincibility expiration
 
                     if current_time - player.invi_time > 0:
 
@@ -842,7 +594,7 @@ class Controller:
 
                         player.norm_player()
 
-                elif player.dead_time and player.lives:
+                elif player.dead_time and player.lives: # Check respawn if 
 
                     if current_time - player.dead_time > 2000:
 
@@ -851,7 +603,6 @@ class Controller:
                 elif dead_collision: # Only check for death collision if player not invincible or dead
 
                     player.dead_player()
-
                     player.speed = self.SPEED
                     player.num_bombs = self.NUM_BOMBS
 
@@ -866,8 +617,13 @@ class Controller:
                 if player.lives <= 0:
 
                     self.players.remove(player)
+
+            if len(self.players.sprites()) == 1:
+
+                self.WINNER = self.players.sprites()[0]
+
+                crash = True
                         
-            
             # UPDATE DISPLAY           
             pygame.display.update()
 
@@ -883,10 +639,123 @@ class Controller:
             # FRAMERATE
             self.clock.tick(self.FRAMERATE)
 
-        # QUIT
-        pygame.display.quit()
-        quit()
+    def end_screen(self):
+
+        if not self.WINNER:
+
+            pygame.display.quit()
+
+            quit()
+
+        win_img_str = 'end_screen//end_screen_'+str(self.WINNER.ID+1)+'.png'
+        self.end_screen = pygame.image.load(win_img_str)
+        self.end_screen.convert()
         
+        crash = False
+
+        end_time = pygame.time.get_ticks()
+	
+        while crash == False:
+
+            current_time = pygame.time.get_ticks()
+
+            # PARSE THROUGH EVENTS
+            for event in pygame.event.get():
+
+                # HANDLE QUIT EVENT (EXIT LOOP)                
+                if event.type == pygame.QUIT:
+                    
+                    crash = True
+
+            if current_time - end_time > 5000:
+
+                crash = True
+         
+            pygame.display.update()
+
+            # FILL DISPLAY WHITE
+            self.display.fill(self.WHITE)
+
+            # DRAW BLOCKS
+            self.blocks.draw(self.display)
+
+            # DRAW PLAYERS
+            self.players.draw(self.display)
+
+            self.display.blit(self.end_screen, (0, 0))
+
+            self.clock.tick(self.FRAMERATE)
+
+        pygame.display.quit()
+
+    def start_screen(self):
+
+        num1_img_str = 'start_screen//2_players.png'
+        num2_img_str = 'start_screen//3_players.png'
+        num3_img_str = 'start_screen//4_players.png'
+        quit_img_str = 'start_screen//quit.png'
+        bkgd_img_str = 'start_screen//start_bg.jpg'
+        self.num1 = pygame.image.load(num1_img_str)
+        num1_rect = pygame.Rect(327, 230, 125, 50)
+        self.num2 = pygame.image.load(num2_img_str)
+        num2_rect = pygame.Rect(327, 290, 125, 50)
+        self.num3 = pygame.image.load(num3_img_str)
+        num3_rect = pygame.Rect(327, 350, 125, 50)
+        self.quit = pygame.image.load(quit_img_str)
+        quit_rect = pygame.Rect(327, 410, 125, 50)
+        self.bkgd = pygame.image.load(bkgd_img_str)
+        bkgd_rect = pygame.Rect(0, 0, 125, 50)
+        
+        crash = False
+
+        while crash == False:
+
+            for event in pygame.event.get():
+
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+
+                    mouse_pos = pygame.mouse.get_pos()
+
+                    if num1_rect.collidepoint(mouse_pos):
+
+                        self.NUM_PLAYERS = 2
+
+                        crash = True
+
+                    if num2_rect.collidepoint(mouse_pos):
+
+                        self.NUM_PLAYERS = 3
+                        
+                        crash = True
+
+                    if num3_rect.collidepoint(mouse_pos):
+
+                        self.NUM_PLAYERS = 4
+                        
+                        crash = True
+
+                    if quit_rect.collidepoint(mouse_pos):
+
+                        pygame.display.quit()
+
+                        quit()
+                        
+                        crash = True
+
+            pygame.display.update()
+
+            self.display.blit(self.bkgd, (bkgd_rect.x, bkgd_rect.y))
+            
+            self.display.blit(self.num1, (num1_rect.x, num1_rect.y))
+            self.display.blit(self.num2, (num2_rect.x, num2_rect.y))
+            self.display.blit(self.num3, (num3_rect.x, num3_rect.y))
+            self.display.blit(self.quit, (quit_rect.x, quit_rect.y))
+
+            self.clock.tick(self.FRAMERATE)
+
+            
 c = Controller()
-game_intro()
+c.start_screen()
+c.populate_arena()
 c.main_loop()
+c.end_screen()

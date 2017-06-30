@@ -4,7 +4,6 @@ from coords import *
 
 class Player(pygame.sprite.Sprite):
 
-    
 
     def __init__(self, pixels, size, ID):
         
@@ -27,18 +26,18 @@ class Player(pygame.sprite.Sprite):
         self.right_pressed = False
         self.down_pressed = False
         self.left_pressed = False
-
         self.on_bomb = False # Store if on bomb to slide off manually afterwards
+
+        self.lives = 0 # These are adopted from controller       
         self.num_bombs = 0
-        self.fire_len = 3
-
+        self.regn_time = 0
+        self.fire_len = 0
         self.speed = 0
+        
         self.fast_time = None
-
         self.invi_time = None
         self.dead_time = None
-        self.lives = 3
-        
+
         reg_img_str = 'char_images//char_'+str(self.ID)+'.png'
         dead_img_str = 'char_images//char_'+str(self.ID)+'_dead.png'
         invi_img_str = 'char_images//char_'+str(self.ID)+'_invi.png'
@@ -83,7 +82,6 @@ class Player(pygame.sprite.Sprite):
 
         self.dead_time = pygame.time.get_ticks()
         self.lives -= 1
-        print(self.lives)
 
         self.image = self.dead_img
         

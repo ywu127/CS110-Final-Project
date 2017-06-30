@@ -52,21 +52,21 @@ class Block(pygame.sprite.Sprite):
 
             self.image = Block.BARR_IMG
 
-            content = random.randrange(0, 10)
+            content = random.randrange(0, 100)
 
-            if content < 5:
+            if content < 50:
 
                 self.contents = 'PWR_BOMB'
 
-            elif content == 5:
+            elif content < 58:
 
                 self.contents = 'PWR_FAST'
 
-            elif content == 6:
+            elif content < 66:
 
                 self.contents = 'PWR_INVI'
 
-            elif content == 7:
+            elif content < 74:
 
                 self.contents = 'PWR_LONG'
  
@@ -90,34 +90,33 @@ class Block(pygame.sprite.Sprite):
 
             self.image = Block.BOMB_1_IMG
 
-            self.drop_time = pygame.time.get_ticks()
+            self.drop_time = pygame.time.get_ticks() # Set a drop time to expire
 
         elif self.form == 'FIRE':
 
-            if old_form[:3] == 'PWR': 
+            if old_form[:3] == 'PWR': # Save power-up form to content to be exposed when turned to walk (like barrels) so power-ups are not deleted by fire
 
-                print(old_form)
-                self.contents = old_form # Save content to be exposed when walk (like barrels)
+                self.contents = old_form 
 
-            if old_form != 'BOMB':
+            if old_form != 'BOMB': # If not a bomb, turn to fire image
 
                 self.image = Block.FIRE_IMG
 
-            else:
+            else: # If a bomb, turn to firebomb image
 
-                self.form = 'FIREBOMB'
+                self.form = 'FIREBOMB' 
                 
                 self.image = Block.FIREBOMB_IMG
 
-            self.fire_time = pygame.time.get_ticks()
+            self.fire_time = pygame.time.get_ticks() # Set a fire time to expire
 
-        elif self.form == 'WALK' and not self.contents:
+        elif self.form == 'WALK' and not self.contents: # If being turned to walk and no contents, turn into walk image
 
             self.contents = None
             
             self.image = Block.WALK_IMG
 
-        elif self.form == 'WALK' and self.contents[:3] == 'PWR':
+        elif self.form == 'WALK' and self.contents: # If being turned to walk and contents, turn into power-up image
  
             self.form = self.contents
 
@@ -137,4 +136,4 @@ class Block(pygame.sprite.Sprite):
 
                 self.image = Block.PWR_LONG_IMG
 
-                self.contents = None
+            self.contents = None

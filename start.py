@@ -1,5 +1,7 @@
 from coords import *
 
+
+# READ MAP FILE AND CHECK IF BLOCK IS BARREL
 def check_barrel(x, y):
 
     with open('map.txt') as file:
@@ -10,6 +12,7 @@ def check_barrel(x, y):
         
         return bool(block)           
 
+# GENERATE INITIALIZER DATA FOR BLOCKS
 def gen_blocks():
 
     for i in range(13):
@@ -38,11 +41,10 @@ def gen_blocks():
                 
                 yield (x, y, 'WALK')
 
-def gen_players():
+# GENERATE INITIALIZER DATA FOR PLAYERS
+def gen_players(num_players):
 
     start_coords = [(1, 1), (11, 11), (1, 11), (11, 1)]
-    
-    num_players = 4
 
     for ID in range(num_players):
 
@@ -53,6 +55,7 @@ def gen_players():
 
         yield (x, y, ID)
 
+# GENERATE RAILS FOR CHECKING MOVEMENT AGAINST (used every update)
 def gen_rail():
 
     for i in range(1, 12):
